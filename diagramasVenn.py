@@ -26,24 +26,72 @@ def mostrar_venn(conjuntos, resultado, operacion):
         conjunto_a, conjunto_b = conjuntos
         venn_diagram = venn2([set(conjunto_a), set(conjunto_b)], set_labels=('A', 'B'), ax=axes)
 
-        # Etiquetas personalizadas
-        venn_diagram.get_label_by_id('100').set_text(', '.join(diferencia(conjunto_a, conjunto_b)) or 'Ø')
-        venn_diagram.get_label_by_id('010').set_text(', '.join(diferencia(conjunto_b, conjunto_a)) or 'Ø')
-        venn_diagram.get_label_by_id('110').set_text(', '.join(interseccion(conjunto_a, conjunto_b)) or 'Ø')
+        # Obtener los objetos de las áreas
+        area_100 = venn_diagram.get_patch_by_id('100')
+        area_010 = venn_diagram.get_patch_by_id('010')
+        area_110 = venn_diagram.get_patch_by_id('110')
+
+        # Verificar si los objetos de área son válidos y asignar las etiquetas
+        if area_100 is not None:
+            label_100 = ', '.join(map(str, diferencia(conjunto_a, conjunto_b)))
+            area_100.set_label(label_100 if label_100 else 'No elements')
+
+        if area_010 is not None:
+            label_010 = ', '.join(map(str, diferencia(conjunto_b, conjunto_a)))
+            area_010.set_label(label_010 if label_010 else 'No elements')
+
+        if area_110 is not None:
+            label_110 = ', '.join(map(str, interseccion(conjunto_a, conjunto_b)))
+            area_110.set_label(label_110 if label_110 else 'No elements')
+
+        # Agregar leyenda
+        plt.legend(loc="lower left", bbox_to_anchor=(1.5, 0), title="Valores")
 
     # Diagrama de Venn para 3 conjuntos
     elif len(conjuntos) == 3:
         conjunto_a, conjunto_b, conjunto_c = conjuntos
         venn_diagram = venn3([set(conjunto_a), set(conjunto_b), set(conjunto_c)], set_labels=('A', 'B', 'C'), ax=axes)
 
-        # Etiquetas personalizadas
-        venn_diagram.get_label_by_id('100').set_text(', '.join(diferencia(conjunto_a, union(conjunto_b, conjunto_c))) or 'Ø')
-        venn_diagram.get_label_by_id('010').set_text(', '.join(diferencia(conjunto_b, union(conjunto_a, conjunto_c))) or 'Ø')
-        venn_diagram.get_label_by_id('001').set_text(', '.join(diferencia(conjunto_c, union(conjunto_a, conjunto_b))) or 'Ø')
-        venn_diagram.get_label_by_id('110').set_text(', '.join(interseccion(conjunto_a, conjunto_b)) or 'Ø')
-        venn_diagram.get_label_by_id('101').set_text(', '.join(interseccion(conjunto_a, conjunto_c)) or 'Ø')
-        venn_diagram.get_label_by_id('011').set_text(', '.join(interseccion(conjunto_b, conjunto_c)) or 'Ø')
-        venn_diagram.get_label_by_id('111').set_text(', '.join(interseccion(conjunto_a, interseccion(conjunto_b, conjunto_c))) or 'Ø')
+        # Obtener los objetos de las áreas
+        area_100 = venn_diagram.get_patch_by_id('100')
+        area_010 = venn_diagram.get_patch_by_id('010')
+        area_001 = venn_diagram.get_patch_by_id('001')
+        area_110 = venn_diagram.get_patch_by_id('110')
+        area_101 = venn_diagram.get_patch_by_id('101')
+        area_011 = venn_diagram.get_patch_by_id('011')
+        area_111 = venn_diagram.get_patch_by_id('111')
+
+        # Etiquetar las áreas con los elementos correspondientes
+        if area_100 is not None:
+            label_100 = ', '.join(map(str, diferencia(conjunto_a, conjunto_b, conjunto_c)))
+            area_100.set_label(label_100 if label_100 else 'No elements')
+        
+        if area_010 is not None:
+            label_010 = ', '.join(map(str, diferencia(conjunto_b, conjunto_a, conjunto_c)))
+            area_010.set_label(label_010 if label_010 else 'No elements')
+        
+        if area_001 is not None:
+            label_001 = ', '.join(map(str, diferencia(conjunto_c, conjunto_a, conjunto_b)))
+            area_001.set_label(label_001 if label_001 else 'No elements')
+        
+        if area_110 is not None:
+            label_110 = ', '.join(map(str, interseccion(conjunto_a, conjunto_b)))
+            area_110.set_label(label_110 if label_110 else 'No elements')
+
+        if area_101 is not None:
+            label_101 = ', '.join(map(str, interseccion(conjunto_a, conjunto_c)))
+            area_101.set_label(label_101 if label_101 else 'No elements')
+
+        if area_011 is not None:
+            label_011 = ', '.join(map(str, interseccion(conjunto_b, conjunto_c)))
+            area_011.set_label(label_011 if label_011 else 'No elements')
+
+        if area_111 is not None:
+            label_111 = ', '.join(map(str, union(conjunto_a, conjunto_b, conjunto_c)))
+            area_111.set_label(label_111 if label_111 else 'No elements')
+
+        # Agregar leyenda
+        plt.legend(loc="lower left", bbox_to_anchor=(1.5, 0), title="Valores")
 
     else:
         axes.set_title('No se pueden visualizar más de 3 conjuntos en un diagrama de Venn')
